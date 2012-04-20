@@ -34,6 +34,9 @@ class Video {
   boolean done() {
     if (markforDeletion == true) {
       Vec2 pos = body.getWorldCenter();
+       pos = box2d.coordWorldToPixels(pos);
+    
+
       for (int i = 0; i < 14; i++) {
         videoparticles.add(new VideoParticle(pos));
       }

@@ -89,6 +89,13 @@ void draw() {
       videos.remove(i);
     }
   }
+  
+    for (int i = videoparticles.size()-1; i >= 0; i--) {
+    VideoParticle v = videoparticles.get(i);
+    if (v.done()) {
+      videoparticles.remove(i);
+    }
+  }
 
 
 

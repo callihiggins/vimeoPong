@@ -36,6 +36,7 @@ class Ball {
   int win() {
     // Let's find the screen position of the particle
     Vec2 pos = box2d.getBodyPixelCoord(body);
+   
     // Is it off the bottom of the screen?
     if (pos.x > width+w*h) {
       killBody();
@@ -96,7 +97,7 @@ class Ball {
     // Give it some initial random velocity
     //    body.setLinearVelocity(new Vec2(random(-5, 5), random(2, 5)));
     //    body.setAngularVelocity(random(-5, 5));
-    body.setGravityScale(-3);
+  //  body.setGravityScale(-3);
     body.setLinearVelocity(new Vec2(-50, 50));
     //  body.setAngularVelocity(random(-5, 5));
   }

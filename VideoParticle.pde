@@ -14,14 +14,14 @@ class VideoParticle {
   color col;
   float lifespan;
   // Constructor
-  VideoParticle(Vec2 tempposition) {
+  VideoParticle(Vec2 temp) {//Vec2 tempposition
     // file = tempFile;
     w = 10;
     h = 10;
+    Vec2 pos = temp;
     col = color(175);
-    Vec2 position = tempposition;
     // Add the box to the box2d world
-    makeBody(position, w, h);
+    makeBody(pos, w, h);
     body.setUserData(this);
     lifespan = 255.0;
   }
@@ -54,8 +54,8 @@ class VideoParticle {
     pushMatrix();
     translate(pos.x, pos.y);
     rotate(-a);
-    fill(col, lifespan);
-    stroke(0);
+    fill(0, lifespan);
+   noStroke();
     rect(0, 0, w, h);
     popMatrix();
   }
@@ -88,7 +88,7 @@ class VideoParticle {
     // Give it some initial random velocity
     //    body.setLinearVelocity(new Vec2(random(-5, 5), random(2, 5)));
     //    body.setAngularVelocity(random(-5, 5));
-    body.setLinearVelocity(new Vec2(random(3, 8), random(2, 5)));
+    body.setLinearVelocity(new Vec2(random(3, 8), random(20, 30)));
     body.setAngularVelocity(random(-5, 5));    
     //  body.setAngularVelocity(random(-5, 5));
   }
