@@ -39,6 +39,7 @@ class Boundary {
     
     // Attached the shape to the body using a Fixture
     b.createFixture(ps,1);
+    b.setUserData(this);
   }
 
   // Draw the boundary, if it were at an angle we'd have to do something fancier

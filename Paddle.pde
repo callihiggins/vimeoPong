@@ -22,6 +22,7 @@ class Paddle {
     w = w_;
     h = h_;
     makeBody(new Vec2(x,y),w,h);
+    b.setUserData(this);
 
     // Define the polygon
  /*   PolygonShape ps = new PolygonShape();

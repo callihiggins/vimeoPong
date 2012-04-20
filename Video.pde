@@ -4,25 +4,22 @@
 // PBox2D example
 
 // A rectangular box
-class Ball {
+class Video {
 
   // We need to keep track of a Body and a width and height
   Body body;
   float w;
   float h;
-  VimeoGrabber grab;
-  String user;
-  PImage userPic;
+  color col;
+  boolean markforDeletion = false;
+
   // Constructor
-  Ball(float x, float y, String tempuser) {
-    user = tempuser;
-    w = 20;
-    h = 20;
-    grab = new VimeoGrabber();
-    grab.requestImage(user);
-    String photo = grab.getuserPhoto();
-    // println(user);
-    userPic = loadImage(photo);
+  Video(float x, float y) {
+    // file = tempFile;
+    w = 30;
+    h = 30;
+    col = color(175);
+
     // Add the box to the box2d world
     makeBody(new Vec2(x, y), w, h);
     body.setUserData(this);
@@ -32,25 +29,15 @@ class Ball {
   void killBody() {
     box2d.destroyBody(body);
   }
-
-  int win() {
-    // Let's find the screen position of the particle
-    Vec2 pos = box2d.getBodyPixelCoord(body);
-    // Is it off the bottom of the screen?
-    if (pos.x > width+w*h) {
-      killBody();
-      return 1;
-    }
-    else if (pos.x < 0) {
-      killBody();
-      return 2;
-    }
-    else {
-      return 3;
-    }
-   
+  
+  boolean done(){
+   if (markforDeletion == true){
+   killBody();
+   return true;
+   }
+   return false;
   }
-
+  
   // Drawing the box
   void display() {
     // We look at each body and get its screen position
@@ -62,9 +49,9 @@ class Ball {
     pushMatrix();
     translate(pos.x, pos.y);
     rotate(-a);
-    fill(175);
+    fill(col);
     stroke(0);
-    image(userPic, 0, 0, w, h);
+    rect(0, 0, w, h);
     popMatrix();
   }
 
@@ -81,9 +68,9 @@ class Ball {
     FixtureDef fd = new FixtureDef();
     fd.shape = sd;
     // Parameters that affect physics
-    fd.density = .8;
-    fd.friction = 0.0;
-    fd.restitution = 1.0;
+    fd.density = 1.0;
+    fd.friction = .7;
+    fd.restitution = .2;
 
     // Define the body and make it from the shape
     BodyDef bd = new BodyDef();
@@ -96,8 +83,8 @@ class Ball {
     // Give it some initial random velocity
     //    body.setLinearVelocity(new Vec2(random(-5, 5), random(2, 5)));
     //    body.setAngularVelocity(random(-5, 5));
-    body.setGravityScale(-3);
-    body.setLinearVelocity(new Vec2(-50, 50));
+    body.setLinearVelocity(new Vec2(random(-5, 5), random(2, 5)));
+    body.setAngularVelocity(random(-5, 5));    
     //  body.setAngularVelocity(random(-5, 5));
   }
 }

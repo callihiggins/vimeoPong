@@ -18,12 +18,14 @@ import org.jbox2d.dynamics.contacts.*;
 PBox2D box2d;
 // A list we'll use to track fixed objects
 ArrayList<Boundary> boundaries;
+ArrayList<Video> videos;
 // A list for all of our rectangles
 Paddle [] paddles = new Paddle[2];
 ArrayList <Ball> balls;
 PFont f;
 String response = " ";
 int score1, score2, counter;
+
 void setup() {
   size(640, 360);
   smooth();
@@ -32,11 +34,12 @@ void setup() {
   box2d = new PBox2D(this);
   box2d.createWorld();
   // We are setting a custom gravity
-  box2d.setGravity(0, 0);
+  box2d.setGravity(0, -20);
 
   // Create ArrayLists	
   boundaries = new ArrayList<Boundary>();
   balls = new ArrayList<Ball>();
+  videos = new ArrayList<Video>();
 
   // Add a bunch of fixed boundaries
   boundaries.add(new Boundary(0, height, width*2, 10));
@@ -45,6 +48,13 @@ void setup() {
   //  boundaries.add(new Boundary(width, height, 10, height/3));
   paddles[0] = new Paddle(0, 0, 10, height/3);
   paddles[1] = new Paddle(width, height, 10, height/3);
+  // make the videos
+  for (int i = 0; i < 14; i++) {
+    videos.add(new Video(width/2, 230));
+  }
+
+  // Turn on collision listening!
+  box2d.listenForCollisions();
 }
 
 void draw() {
@@ -58,88 +68,102 @@ void draw() {
   for (Boundary wall: boundaries) {
     wall.display();
   }
-// Display the ball
+  // Display the ball
   for (Ball ball: balls) {
     ball.display();
   }
 
-
-  // Display the paddles
-  for (int i = 0; i < paddles.length; i++) {
-    paddles[i].display();
+  for (Video v: videos) {
+    v.display();
   }
-
-  // Boxes that leave the screen, we delete them
-  // (note they have to be deleted from both the box2d world and our list
-  fill(0);
-  textFont(f);
-
-  for (int i = balls.size()-1; i >= 0; i--) {
-    Ball b = balls.get(i);
-    if (b.win() == 1) {
-       score1++;
-       balls.remove(i);
-    }
-    else if (b.win() == 2) {
-       score2++;
-       balls.remove(i);
-    }
-  }
-  text("Player One: " + score1, 10, 20);
-  text("Player Two: " + score2, 500, 20);
   
-  if(score1 == 5 && counter < 200){
-    println("player one wins");
-    text("PLAYER ONE WINS", width/2, height/2);
-   counter++;
-  }
-  if(score2 == 5 && counter < 200){
-   text("PLAYER TWO WINS", width/2, height/2);
-   counter++;
-  }
-  if (counter == 199){
-   score1 = 0;
-   score2 = 0;
+   for (int i = videos.size()-1; i >= 0; i--) {
+    Video v = videos.get(i);
+    if (v.done()) {
+      videos.remove(i);
+    }
   }
 
-  paddles[0].setLocation(mouseY);  
-  paddles[1].setLocation(mouseY);
+
+
+
+
+// Display the paddles
+for (int i = 0; i < paddles.length; i++) {
+  paddles[i].display();
+}
+
+// Boxes that leave the screen, we delete them
+// (note they have to be deleted from both the box2d world and our list
+fill(0);
+textFont(f);
+
+for (int i = balls.size()-1; i >= 0; i--) {
+  Ball b = balls.get(i);
+  if (b.win() == 1) {
+    score1++;
+    balls.remove(i);
+  }
+  else if (b.win() == 2) {
+    score2++;
+    balls.remove(i);
+  }
+}
+text("Player One: " + score1, 10, 20);
+text("Player Two: " + score2, 500, 20);
+
+if (score1 == 5 && counter < 200) {
+  println("player one wins");
+  text("PLAYER ONE WINS", width/2, height/2);
+  counter++;
+}
+if (score2 == 5 && counter < 200) {
+  text("PLAYER TWO WINS", width/2, height/2);
+  counter++;
+}
+if (counter == 199) {
+  score1 = 0;
+  score2 = 0;
+  counter = 0;
+}
+
+paddles[0].setLocation(mouseY);  
+paddles[1].setLocation(mouseY);
 }
 
 void keyPressed() {
-
-  if (key == 'a' || key == 'A') { 
-    float y = paddles[0].y;
-    // println(paddles[0].y);
-    y = y--;
-    //  println(y);
-    paddles[0].setLocation(y);
-  }
-  if (key == 'z' || key == 'Z') { 
-    Vec2 pos = paddles[0].getLocation();
-    float y = pos.y;
-    y = box2d.scalarWorldToPixels(y);
-    y = y + 1;
-    paddles[0].setLocation(y);
-    //y = y+ 1;
-    //    println(y);
-    //  paddles[0].setLocation(y);
-    //        println(paddles[0].y);
-  }
-  if (key == 'k' || key == 'K') { 
-    float y = paddles[0].y;
-    y = y--;
-    paddles[0].setLocation(mouseY);
-  }
-  if (key == 'm' || key == 'M') { 
-    float y = paddles[0].y;
-    y = y++;
-    paddles[0].setLocation(y);
-  }
-
   if (key == 'b' || key == 'B') { 
-    Ball p = new Ball(mouseX, mouseY, "calli");
+    Ball p = new Ball(mouseX, mouseY, "blakewhitman");
     balls.add(p);
   }
+}
+
+// Collision event functions!
+void beginContact(Contact cp) {
+  // Get both fixtures
+  Fixture f1 = cp.getFixtureA();
+  Fixture f2 = cp.getFixtureB();
+  // Get both bodies
+  Body b1 = f1.getBody();
+  Body b2 = f2.getBody();
+
+  // Get our objects that reference these bodies
+  Object o1 = b1.getUserData();
+  Object o2 = b2.getUserData();
+
+  if (o1.getClass() == Ball.class && o2.getClass() == Video.class|| o1.getClass() == Video.class && o2.getClass() == Ball.class) {
+    if (o1.getClass() == Video.class) {
+      Video v = (Video) o1;
+      v.markforDeletion = true;
+    }
+    else {
+      Video v = (Video) o2;
+      v.markforDeletion = true;
+    }
+  }
+}
+
+// Objects stop touching each other
+void endContact(Contact cp) {
 }
 
