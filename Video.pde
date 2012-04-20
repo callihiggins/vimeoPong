@@ -12,6 +12,7 @@ class Video {
   float h;
   color col;
   boolean markforDeletion = false;
+  Vec2 mouse = new Vec2(mouseX, mouseY);
 
   // Constructor
   Video(float x, float y) {
@@ -29,15 +30,19 @@ class Video {
   void killBody() {
     box2d.destroyBody(body);
   }
-  
-  boolean done(){
-   if (markforDeletion == true){
-   killBody();
-   return true;
-   }
-   return false;
+
+  boolean done() {
+    if (markforDeletion == true) {
+      Vec2 pos = body.getWorldCenter();
+      for (int i = 0; i < 14; i++) {
+        videoparticles.add(new VideoParticle(pos));
+      }
+      killBody();
+      return true;
+    }
+    return false;
   }
-  
+
   // Drawing the box
   void display() {
     // We look at each body and get its screen position
@@ -53,6 +58,11 @@ class Video {
     stroke(0);
     rect(0, 0, w, h);
     popMatrix();
+  }
+
+  Vec2 getLocation() {
+    Vec2 pos = body.getWorldCenter();
+    return pos;
   }
 
   // This function adds the rectangle to the box2d world

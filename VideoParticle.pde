@@ -12,16 +12,16 @@ class VideoParticle {
   float h;
   String user;
   color col;
-float lifespan;
+  float lifespan;
   // Constructor
-  VideoParticle(float x, float y) {
+  VideoParticle(Vec2 tempposition) {
     // file = tempFile;
     w = 10;
     h = 10;
     col = color(175);
-
+    Vec2 position = tempposition;
     // Add the box to the box2d world
-    makeBody(new Vec2(x, y), w, h);
+    makeBody(position, w, h);
     body.setUserData(this);
     lifespan = 255.0;
   }
@@ -40,7 +40,7 @@ float lifespan;
     return false;
   }
 
- 
+
 
   // Drawing the box
   void display() {
@@ -88,7 +88,7 @@ float lifespan;
     // Give it some initial random velocity
     //    body.setLinearVelocity(new Vec2(random(-5, 5), random(2, 5)));
     //    body.setAngularVelocity(random(-5, 5));
-    body.setLinearVelocity(new Vec2(random(-5, 5), random(2, 5)));
+    body.setLinearVelocity(new Vec2(random(3, 8), random(2, 5)));
     body.setAngularVelocity(random(-5, 5));    
     //  body.setAngularVelocity(random(-5, 5));
   }

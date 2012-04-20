@@ -19,6 +19,7 @@ PBox2D box2d;
 // A list we'll use to track fixed objects
 ArrayList<Boundary> boundaries;
 ArrayList<Video> videos;
+ArrayList<VideoParticle> videoparticles;
 // A list for all of our rectangles
 Paddle [] paddles = new Paddle[2];
 ArrayList <Ball> balls;
@@ -40,6 +41,7 @@ void setup() {
   boundaries = new ArrayList<Boundary>();
   balls = new ArrayList<Ball>();
   videos = new ArrayList<Video>();
+  videoparticles = new ArrayList<VideoParticle>();
 
   // Add a bunch of fixed boundaries
   boundaries.add(new Boundary(0, height, width*2, 10));
@@ -77,7 +79,11 @@ void draw() {
     v.display();
   }
   
-   for (int i = videos.size()-1; i >= 0; i--) {
+  for (VideoParticle v: videoparticles) {
+    v.display();
+  }
+
+  for (int i = videos.size()-1; i >= 0; i--) {
     Video v = videos.get(i);
     if (v.done()) {
       videos.remove(i);
@@ -88,47 +94,47 @@ void draw() {
 
 
 
-// Display the paddles
-for (int i = 0; i < paddles.length; i++) {
-  paddles[i].display();
-}
-
-// Boxes that leave the screen, we delete them
-// (note they have to be deleted from both the box2d world and our list
-fill(0);
-textFont(f);
-
-for (int i = balls.size()-1; i >= 0; i--) {
-  Ball b = balls.get(i);
-  if (b.win() == 1) {
-    score1++;
-    balls.remove(i);
+  // Display the paddles
+  for (int i = 0; i < paddles.length; i++) {
+    paddles[i].display();
   }
-  else if (b.win() == 2) {
-    score2++;
-    balls.remove(i);
+
+  // Boxes that leave the screen, we delete them
+  // (note they have to be deleted from both the box2d world and our list
+  fill(0);
+  textFont(f);
+
+  for (int i = balls.size()-1; i >= 0; i--) {
+    Ball b = balls.get(i);
+    if (b.win() == 1) {
+      score1++;
+      balls.remove(i);
+    }
+    else if (b.win() == 2) {
+      score2++;
+      balls.remove(i);
+    }
   }
-}
-text("Player One: " + score1, 10, 20);
-text("Player Two: " + score2, 500, 20);
+  text("Player One: " + score1, 10, 20);
+  text("Player Two: " + score2, 500, 20);
 
-if (score1 == 5 && counter < 200) {
-  println("player one wins");
-  text("PLAYER ONE WINS", width/2, height/2);
-  counter++;
-}
-if (score2 == 5 && counter < 200) {
-  text("PLAYER TWO WINS", width/2, height/2);
-  counter++;
-}
-if (counter == 199) {
-  score1 = 0;
-  score2 = 0;
-  counter = 0;
-}
+  if (score1 == 5 && counter < 200) {
+    println("player one wins");
+    text("PLAYER ONE WINS", width/2, height/2);
+    counter++;
+  }
+  if (score2 == 5 && counter < 200) {
+    text("PLAYER TWO WINS", width/2, height/2);
+    counter++;
+  }
+  if (counter == 199) {
+    score1 = 0;
+    score2 = 0;
+    counter = 0;
+  }
 
-paddles[0].setLocation(mouseY);  
-paddles[1].setLocation(mouseY);
+  paddles[0].setLocation(mouseY);  
+  paddles[1].setLocation(mouseY);
 }
 
 void keyPressed() {
@@ -154,7 +160,8 @@ void beginContact(Contact cp) {
   if (o1.getClass() == Ball.class && o2.getClass() == Video.class|| o1.getClass() == Video.class && o2.getClass() == Ball.class) {
     if (o1.getClass() == Video.class) {
       Video v = (Video) o1;
-      v.markforDeletion = true;
+        v.markforDeletion = true;
+    //  makeParticles(new Vec2(mouseX,mouseY));
     }
     else {
       Video v = (Video) o2;
@@ -166,4 +173,5 @@ void beginContact(Contact cp) {
 // Objects stop touching each other
 void endContact(Contact cp) {
 }
+
 
