@@ -10,16 +10,59 @@ class Video {
   Body body;
   float w;
   float h;
+  int c;
   color col;
   boolean markforDeletion = false;
   Vec2 mouse = new Vec2(mouseX, mouseY);
 
   // Constructor
-  Video(float x, float y) {
+  Video(float x, float y, int _c) {
     // file = tempFile;
     w = 30;
     h = 30;
-    col = color(175);
+    c = _c;
+    if (c==0){
+    col = color(100,200,0);
+    }
+    else if (c==1){
+    col = color(255,0,0);
+    }
+    else if(c==2){
+     col = color(0,255,0); 
+    }
+      else if(c==3){
+     col = color(0,0,255); 
+    }
+      else if(c==4){
+     col = color(175,255,0); 
+    }
+      else if(c==5){
+     col = color(0,255,175); 
+    }
+      else if(c==6){
+     col = color(175,175,0); 
+    }
+      else if(c==7){
+     col = color(0,255,255); 
+    }
+      else if(c==8){
+     col = color(255,255,0); 
+    }
+      else if(c==9){
+     col = color(255,0,255); 
+    }
+      else if(c==10){
+     col = color(116,148,200); 
+    }
+      else if(c==11){
+     col = color(200,255,200); 
+    }
+      else if(c==12){
+     col = color(186,255,186); 
+    }
+      else if(c==13){
+     col = color(200,255,20); 
+    }
 
     // Add the box to the box2d world
     makeBody(new Vec2(x, y), w, h);
@@ -34,11 +77,9 @@ class Video {
   boolean done() {
     if (markforDeletion == true) {
       Vec2 pos = body.getWorldCenter();
-       pos = box2d.coordWorldToPixels(pos);
-    
-
-      for (int i = 0; i < 14; i++) {
-        videoparticles.add(new VideoParticle(pos));
+      pos = box2d.coordWorldToPixels(pos);
+      for (int i = 0; i < 13; i++) {
+        videoparticles.add(new VideoParticle(pos, c));
       }
       killBody();
       return true;
@@ -67,7 +108,8 @@ class Video {
     Vec2 pos = body.getWorldCenter();
     return pos;
   }
-
+  
+ 
   // This function adds the rectangle to the box2d world
   void makeBody(Vec2 center, float w_, float h_) {
 

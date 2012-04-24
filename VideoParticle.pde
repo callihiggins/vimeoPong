@@ -11,17 +11,61 @@ class VideoParticle {
   float w;
   float h;
   String user;
+  int c;
   color col;
   float lifespan;
   // Constructor
-  VideoParticle(Vec2 temp) {//Vec2 tempposition
+  VideoParticle(Vec2 tempposition, int c) {
     // file = tempFile;
     w = 10;
     h = 10;
-    Vec2 pos = temp;
-    col = color(175);
+   
+    if (c==0){
+    col = color(100,200,0);
+    }
+    else if (c==1){
+    col = color(255,0,0);
+    }
+    else if(c==2){
+     col = color(0,255,0); 
+    }
+      else if(c==3){
+     col = color(0,0,255); 
+    }
+      else if(c==4){
+     col = color(175,255,0); 
+    }
+      else if(c==5){
+     col = color(0,255,175); 
+    }
+      else if(c==6){
+     col = color(175,175,0); 
+    }
+      else if(c==7){
+     col = color(0,255,255); 
+    }
+      else if(c==8){
+     col = color(255,255,0); 
+    }
+      else if(c==9){
+     col = color(255,0,255); 
+    }
+      else if(c==10){
+     col = color(116,148,200); 
+    }
+      else if(c==11){
+     col = color(200,255,200); 
+    }
+      else if(c==12){
+     col = color(186,255,186); 
+    }
+      else if(c==13){
+     col = color(200,255,20); 
+    }
+   
+    Vec2 position = tempposition;
     // Add the box to the box2d world
-    makeBody(pos, w, h);
+    makeBody(position, w, h);
     body.setUserData(this);
     lifespan = 255.0;
   }
@@ -54,8 +98,8 @@ class VideoParticle {
     pushMatrix();
     translate(pos.x, pos.y);
     rotate(-a);
-    fill(0, lifespan);
-   noStroke();
+    fill(col);
+    stroke(0);
     rect(0, 0, w, h);
     popMatrix();
   }
@@ -88,7 +132,7 @@ class VideoParticle {
     // Give it some initial random velocity
     //    body.setLinearVelocity(new Vec2(random(-5, 5), random(2, 5)));
     //    body.setAngularVelocity(random(-5, 5));
-    body.setLinearVelocity(new Vec2(random(3, 8), random(20, 30)));
+    body.setLinearVelocity(new Vec2(random(3, 8), random(2, 5)));
     body.setAngularVelocity(random(-5, 5));    
     //  body.setAngularVelocity(random(-5, 5));
   }

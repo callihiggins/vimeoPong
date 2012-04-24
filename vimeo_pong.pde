@@ -56,8 +56,8 @@ void setup() {
   paddles[0] = new Paddle(0, 0, 10, height/3);
   paddles[1] = new Paddle(width, height, 10, height/3);
   // make the videos
-  for (int i = 0; i < 14; i++) {
-    videos.add(new Video(width/2, 230));
+  for (int i = 0; i < 13; i++) {
+    videos.add(new Video(width/2, 230, i));
   }
 
   // Turn on collision listening!
@@ -138,8 +138,8 @@ void draw() {
     counter = 0;
   }
 
-  paddles[0].setLocation(pot1);  
-  paddles[1].setLocation(pot2);
+  paddles[0].setLocation(mouseY);  
+  paddles[1].setLocation(mouseY);
 }
 
 void keyPressed() {
@@ -162,10 +162,11 @@ void beginContact(Contact cp) {
   Object o1 = b1.getUserData();
   Object o2 = b2.getUserData();
 
-  if (o1.getClass() == Ball.class && o2.getClass() == Video.class|| o1.getClass() == Video.class && o2.getClass() == Ball.class) {
+  if (o1.getClass() == Ball.class && o2.getClass() == Video.class || o1.getClass() == Video.class && o2.getClass() == Ball.class) {
     if (o1.getClass() == Video.class) {
       Video v = (Video) o1;
       v.markforDeletion = true;
+      println(v.c);
       //  makeParticles(new Vec2(mouseX,mouseY));
     }
     else {
