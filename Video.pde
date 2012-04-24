@@ -129,7 +129,7 @@ class Video {
 
     // Define the body and make it from the shape
     BodyDef bd = new BodyDef();
-    bd.type = BodyType.DYNAMIC;
+    bd.type = BodyType.STATIC;
     bd.position.set(box2d.coordPixelsToWorld(center));
 
     body = box2d.createBody(bd);

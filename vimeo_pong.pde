@@ -24,6 +24,10 @@ ArrayList<VideoParticle> videoparticles;
 // A list for all of our rectangles
 Paddle [] paddles = new Paddle[2];
 ArrayList <Ball> balls;
+VimeoGrabber grab1;
+VimeoGrabber grab2;
+String user1, user2;
+PImage userPic1, userPic2;
 PFont f;
 String response = " ";
 int score1, score2, counter, pot1, pot2;
@@ -31,9 +35,9 @@ OscP5 oscP5;
 //OscP5 oscP5_2;
 NetAddress myRemoteLocation;
 void setup() {
-  size(640, 360);
+  size(640, 560);
   smooth();
-  f = createFont("Georgia", 12, true);
+  f = createFont("Helvetica", 18, true);
   oscP5 = new OscP5(this, 12000);
   myRemoteLocation = new NetAddress("127.0.0.1", 12000);
   // Initialize box2d physics and create the world
@@ -50,18 +54,31 @@ void setup() {
 
   // Add a bunch of fixed boundaries
   boundaries.add(new Boundary(0, height, width*2, 10));
-  boundaries.add(new Boundary(0, 0, width*2, 10));
+  boundaries.add(new Boundary(0, 60, width*2, 10));
   //  boundaries.add(new Boundary(0, 0, 10, height/3));
   //  boundaries.add(new Boundary(width, height, 10, height/3));
   paddles[0] = new Paddle(0, 0, 10, height/3);
   paddles[1] = new Paddle(width, height, 10, height/3);
   // make the videos
   for (int i = 0; i < 13; i++) {
-    videos.add(new Video(width/2, 230, i));
+    videos.add(new Video(i*45 + 40, random(80, height -40), i));
   }
 
   // Turn on collision listening!
   box2d.listenForCollisions();
+
+  //vimeo grabber stuff-- will eventually be in RFID business
+  user1 = "calli";
+  user2 = "imagima";
+  grab1 = new VimeoGrabber();
+  grab2 = new VimeoGrabber();
+  grab1.requestImage(user1);
+  grab2.requestImage(user2);
+  String photo1 = grab1.getuserPhoto();
+  String photo2 = grab2.getuserPhoto();
+  // println(user);
+  userPic1 = loadImage(photo1);
+  userPic2 = loadImage(photo2);
 }
 
 void draw() {
@@ -112,17 +129,20 @@ void draw() {
   for (int i = balls.size()-1; i >= 0; i--) {
     Ball b = balls.get(i);
     if (b.win() == 1) {
+      println("score1: " +score1);
       score1++;
       balls.remove(i);
     }
     else if (b.win() == 2) {
+      println("score2: " + score2);
       score2++;
       balls.remove(i);
     }
   }
-  text("Player One: " + score1, 10, 20);
-  text("Player Two: " + score2, 500, 20);
-
+  text(": "+ score1, 60, 25);
+  image(userPic1, 10, 5, 40, 40);
+  text(": " + score2, 550, 25);
+  image(userPic2, 500, 5, 40, 40);
   if (score1 == 5 && counter < 200) {
     println("player one wins");
     text("PLAYER ONE WINS", width/2, height/2);
@@ -137,14 +157,14 @@ void draw() {
     score2 = 0;
     counter = 0;
   }
-
-  paddles[0].setLocation(mouseY);  
-  paddles[1].setLocation(mouseY);
+int paddlepos = int(map(mouseY, 0, height, 110, height-60));
+  paddles[0].setLocation(paddlepos);  
+  paddles[1].setLocation(paddlepos);
 }
 
 void keyPressed() {
   if (key == 'b' || key == 'B') { 
-    Ball p = new Ball(mouseX, mouseY, "blakewhitman");
+    Ball p = new Ball(mouseX, mouseY);
     balls.add(p);
   }
 }
@@ -166,7 +186,6 @@ void beginContact(Contact cp) {
     if (o1.getClass() == Video.class) {
       Video v = (Video) o1;
       v.markforDeletion = true;
-      println(v.c);
       //  makeParticles(new Vec2(mouseX,mouseY));
     }
     else {
@@ -180,17 +199,5 @@ void beginContact(Contact cp) {
 void endContact(Contact cp) {
 }
 
-void oscEvent(OscMessage theOscMessage) {
-  /* check if theOscMessage has the address pattern we are looking for. */
-  
-  if(theOscMessage.checkAddrPattern("/pot")==true) {
-    
-       pot1 = theOscMessage.get(0).intValue();  
-       pot2 = theOscMessage.get(1).intValue();  
-      print("### received an osc message ");
-      println(" values: "+pot1+ ", "+pot2);
-      return;
-    }  
-}
 
 

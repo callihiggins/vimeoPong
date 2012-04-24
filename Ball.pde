@@ -10,22 +10,15 @@ class Ball {
   Body body;
   float w;
   float h;
-  VimeoGrabber grab;
-  String user;
-  PImage userPic;
+  PImage logo;
   // Constructor
-  Ball(float x, float y, String tempuser) {
-    user = tempuser;
-    w = 20;
-    h = 20;
-    grab = new VimeoGrabber();
-    grab.requestImage(user);
-    String photo = grab.getuserPhoto();
-    // println(user);
-    userPic = loadImage(photo);
+  Ball(float x, float y) {
+    w = 60;
+    h = 60;
     // Add the box to the box2d world
     makeBody(new Vec2(x, y), w, h);
     body.setUserData(this);
+    logo = loadImage("vimeo_logo.png");
   }
 
   // This function removes the particle from the box2d world
@@ -36,10 +29,11 @@ class Ball {
   int win() {
     // Let's find the screen position of the particle
     Vec2 pos = box2d.getBodyPixelCoord(body);
-   
     // Is it off the bottom of the screen?
-    if (pos.x > width+w*h) {
+    println(pos.x);
+    if (pos.x > width + w) {
       killBody();
+      println("offscreen");
       return 1;
     }
     else if (pos.x < 0) {
@@ -65,7 +59,7 @@ class Ball {
     rotate(-a);
     fill(175);
     stroke(0);
-    image(userPic, 0, 0, w, h);
+    image(logo, 0, 0, w, h);
     popMatrix();
   }
 
@@ -97,7 +91,7 @@ class Ball {
     // Give it some initial random velocity
     //    body.setLinearVelocity(new Vec2(random(-5, 5), random(2, 5)));
     //    body.setAngularVelocity(random(-5, 5));
-  //  body.setGravityScale(-3);
+    body.setGravityScale(-6);
     body.setLinearVelocity(new Vec2(-50, 50));
     //  body.setAngularVelocity(random(-5, 5));
   }
