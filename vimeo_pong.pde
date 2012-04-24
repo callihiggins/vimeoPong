@@ -13,7 +13,8 @@ import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.common.*;
 import org.jbox2d.dynamics.*;
 import org.jbox2d.dynamics.contacts.*;
-
+import oscP5.*;
+import netP5.*;
 // A reference to our box2d world
 PBox2D box2d;
 // A list we'll use to track fixed objects
@@ -25,12 +26,16 @@ Paddle [] paddles = new Paddle[2];
 ArrayList <Ball> balls;
 PFont f;
 String response = " ";
-int score1, score2, counter;
-
+int score1, score2, counter, pot1, pot2;
+OscP5 oscP5;
+//OscP5 oscP5_2;
+NetAddress myRemoteLocation;
 void setup() {
   size(640, 360);
   smooth();
   f = createFont("Georgia", 12, true);
+  oscP5 = new OscP5(this, 12000);
+  myRemoteLocation = new NetAddress("127.0.0.1", 12000);
   // Initialize box2d physics and create the world
   box2d = new PBox2D(this);
   box2d.createWorld();
@@ -78,7 +83,7 @@ void draw() {
   for (Video v: videos) {
     v.display();
   }
-  
+
   for (VideoParticle v: videoparticles) {
     v.display();
   }
@@ -87,13 +92,6 @@ void draw() {
     Video v = videos.get(i);
     if (v.done()) {
       videos.remove(i);
-    }
-  }
-  
-    for (int i = videoparticles.size()-1; i >= 0; i--) {
-    VideoParticle v = videoparticles.get(i);
-    if (v.done()) {
-      videoparticles.remove(i);
     }
   }
 
@@ -140,8 +138,8 @@ void draw() {
     counter = 0;
   }
 
-  paddles[0].setLocation(mouseY);  
-  paddles[1].setLocation(mouseY);
+  paddles[0].setLocation(pot1);  
+  paddles[1].setLocation(pot2);
 }
 
 void keyPressed() {
@@ -167,8 +165,8 @@ void beginContact(Contact cp) {
   if (o1.getClass() == Ball.class && o2.getClass() == Video.class|| o1.getClass() == Video.class && o2.getClass() == Ball.class) {
     if (o1.getClass() == Video.class) {
       Video v = (Video) o1;
-        v.markforDeletion = true;
-    //  makeParticles(new Vec2(mouseX,mouseY));
+      v.markforDeletion = true;
+      //  makeParticles(new Vec2(mouseX,mouseY));
     }
     else {
       Video v = (Video) o2;
@@ -179,6 +177,19 @@ void beginContact(Contact cp) {
 
 // Objects stop touching each other
 void endContact(Contact cp) {
+}
+
+void oscEvent(OscMessage theOscMessage) {
+  /* check if theOscMessage has the address pattern we are looking for. */
+  
+  if(theOscMessage.checkAddrPattern("/pot")==true) {
+    
+       pot1 = theOscMessage.get(0).intValue();  
+       pot2 = theOscMessage.get(1).intValue();  
+      print("### received an osc message ");
+      println(" values: "+pot1+ ", "+pot2);
+      return;
+    }  
 }
 
 
